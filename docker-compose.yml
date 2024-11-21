@@ -18,6 +18,11 @@ services:
       - POSTGRESQL_HOST=postgres
     ports:
       - 8080:8080
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   chirpstack-gateway-bridge:
     image: chirpstack/chirpstack-gateway-bridge:4
@@ -32,6 +37,11 @@ services:
       - INTEGRATION__MQTT__COMMAND_TOPIC_TEMPLATE=eu868/gateway/{{ .GatewayID }}/command/#
     depends_on:
       - mosquitto
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
   
   chirpstack-gateway-bridge-basicstation:
     image: chirpstack/chirpstack-gateway-bridge:4
@@ -43,6 +53,11 @@ services:
       - ./configuration/chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge
     depends_on:
       - mosquitto
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   chirpstack-rest-api:
     image: chirpstack/chirpstack-rest-api:4
@@ -52,6 +67,11 @@ services:
       - 8090:8090
     depends_on:
       - chirpstack
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   postgres:
     image: postgres:14-alpine
@@ -61,6 +81,11 @@ services:
       - postgresqldata:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=root
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   redis:
     image: redis:7-alpine
@@ -68,6 +93,11 @@ services:
     command: redis-server --save 300 1 --save 60 100 --appendonly no
     volumes:
       - redisdata:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   mosquitto:
     image: eclipse-mosquitto:2
@@ -76,6 +106,12 @@ services:
       - 1883:1883
     volumes: 
       - ./configuration/mosquitto/config/:/mosquitto/config/
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
 
 volumes:
   postgresqldata:
